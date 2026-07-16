@@ -1,0 +1,20 @@
+services:
+  wa-bot:
+    build: .
+    container_name: wabaileys
+    restart: unless-stopped
+    ports:
+      - "3005:3000"
+    volumes:
+      - ./auth_info:/app/auth_info
+    env_file:
+      - .env
+    environment:
+      - TZ=Asia/Jakarta
+      - PORT=3000
+      - LOG_LEVEL=info
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
