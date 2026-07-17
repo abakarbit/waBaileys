@@ -9,27 +9,27 @@
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
 :root {
-  --bg-deep: #06080d;
-  --bg-base: #0c1017;
-  --bg-card: #12161f;
-  --bg-elevated: #1a1f2b;
-  --bg-input: #0e1219;
-  --border: #1e2536;
-  --border-hover: #2a3348;
-  --text-primary: #e8ecf4;
-  --text-secondary: #8b95a8;
-  --text-muted: #4e5869;
-  --accent: #10b981;
-  --accent-dim: rgba(16,185,129,0.12);
-  --accent-glow: rgba(16,185,129,0.25);
-  --danger: #f43f5e;
-  --danger-dim: rgba(244,63,94,0.12);
+  --bg-deep: #f0f2f5;
+  --bg-base: #ffffff;
+  --bg-card: #ffffff;
+  --bg-elevated: #f7f8fa;
+  --bg-input: #f0f2f5;
+  --border: #e2e6ec;
+  --border-hover: #cdd3dc;
+  --text-primary: #111b21;
+  --text-secondary: #54656f;
+  --text-muted: #8696a0;
+  --accent: #00a884;
+  --accent-dim: rgba(0,168,132,0.07);
+  --accent-glow: rgba(0,168,132,0.12);
+  --danger: #ea0038;
+  --danger-dim: rgba(234,0,56,0.06);
   --radius-sm: 8px;
   --radius-md: 12px;
   --radius-lg: 16px;
   --radius-xl: 20px;
-  --shadow-card: 0 1px 3px rgba(0,0,0,0.3), 0 4px 20px rgba(0,0,0,0.15);
-  --shadow-elevated: 0 4px 12px rgba(0,0,0,0.4), 0 12px 40px rgba(0,0,0,0.25);
+  --shadow-card: 0 1px 2px rgba(0,0,0,0.04), 0 4px 16px rgba(0,0,0,0.04);
+  --shadow-elevated: 0 2px 8px rgba(0,0,0,0.06), 0 12px 32px rgba(0,0,0,0.06);
   --transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 body {
@@ -47,7 +47,7 @@ body::before {
   position: fixed;
   top: -30%; left: -10%;
   width: 50%; height: 60%;
-  background: radial-gradient(ellipse, rgba(16,185,129,0.04) 0%, transparent 70%);
+  background: radial-gradient(ellipse, rgba(0,168,132,0.05) 0%, transparent 70%);
   pointer-events: none; z-index: 0;
 }
 body::after {
@@ -55,7 +55,7 @@ body::after {
   position: fixed;
   bottom: -20%; right: -10%;
   width: 45%; height: 50%;
-  background: radial-gradient(ellipse, rgba(59,130,246,0.03) 0%, transparent 70%);
+  background: radial-gradient(ellipse, rgba(2,126,181,0.04) 0%, transparent 70%);
   pointer-events: none; z-index: 0;
 }
 .login-wrap {
@@ -69,12 +69,12 @@ body::after {
 }
 .logo-mark {
   width: 42px; height: 42px; border-radius: 12px;
-  background: linear-gradient(135deg, #10b981, #059669);
+  background: linear-gradient(135deg, #00a884, #007d63);
   display: flex; align-items: center; justify-content: center;
-  box-shadow: 0 0 24px rgba(16,185,129,0.2);
+  box-shadow: 0 2px 10px rgba(0,168,132,0.2);
 }
 .logo-mark svg { width: 22px; height: 22px; }
-.logo-text { font-size: 1.3rem; font-weight: 800; letter-spacing: -0.02em; }
+.logo-text { font-size: 1.3rem; font-weight: 800; letter-spacing: -0.02em; color: var(--text-primary); }
 .logo-text span { color: var(--text-muted); font-weight: 400; }
 
 .card {
@@ -87,6 +87,7 @@ body::after {
 .card h2 {
   font-size: 1.1rem; font-weight: 700;
   margin-bottom: 6px; letter-spacing: -0.01em;
+  color: var(--text-primary);
 }
 .card p {
   font-size: 0.84rem; color: var(--text-secondary);
@@ -107,6 +108,7 @@ body::after {
 }
 .form-input:focus {
   border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-dim);
+  background: #fff;
 }
 .form-input::placeholder { color: var(--text-muted); }
 
@@ -118,10 +120,10 @@ body::after {
   justify-content: center; gap: 8px;
 }
 .btn svg { width: 18px; height: 18px; flex-shrink: 0; }
-.btn-primary { background: var(--accent); color: #022c22; }
+.btn-primary { background: var(--accent); color: #ffffff; }
 .btn-primary:hover {
-  background: #0ea272;
-  box-shadow: 0 0 24px rgba(16,185,129,0.25);
+  background: #009575;
+  box-shadow: 0 4px 14px rgba(0,168,132,0.25);
   transform: translateY(-1px);
 }
 .btn-primary:active { transform: translateY(0); }
@@ -129,8 +131,8 @@ body::after {
 
 .error-box {
   display: none; padding: 12px 14px;
-  background: var(--danger-dim); border: 1px solid rgba(244,63,94,0.2);
-  border-radius: var(--radius-sm); color: #fda4af;
+  background: var(--danger-dim); border: 1px solid rgba(234,0,56,0.15);
+  border-radius: var(--radius-sm); color: #b3002b;
   font-size: 0.82rem; margin-bottom: 16px; line-height: 1.4;
   align-items: flex-start; gap: 8px;
 }
@@ -196,7 +198,7 @@ async function doLogin() {
 
   var btn = document.getElementById('loginBtn');
   btn.disabled = true;
-  btn.innerHTML = '<div class="spinner" style="width:18px;height:18px;border:2px solid rgba(2,44,34,0.3);border-top-color:#022c22;border-radius:50%;animation: spin 0.7s linear infinite;margin:0"></div> Memverifikasi...';
+  btn.innerHTML = '<div class="spinner" style="width:18px;height:18px;border:2px solid rgba(255,255,255,0.3);border-top-color:#ffffff;border-radius:50%;animation: spin 0.7s linear infinite;margin:0"></div> Memverifikasi...';
 
   try {
     var r = await fetch('/api/login', {

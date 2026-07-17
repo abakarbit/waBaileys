@@ -13,6 +13,12 @@ services:
       - TZ=Asia/Jakarta
       - PORT=3000
       - LOG_LEVEL=info
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
     logging:
       driver: json-file
       options:

@@ -8,31 +8,31 @@
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg-deep: #06080d;
-  --bg-base: #0c1017;
-  --bg-card: #12161f;
-  --bg-elevated: #1a1f2b;
-  --bg-input: #0e1219;
-  --border: #1e2536;
-  --border-hover: #2a3348;
-  --text-primary: #e8ecf4;
-  --text-secondary: #8b95a8;
-  --text-muted: #4e5869;
-  --accent: #10b981;
-  --accent-dim: rgba(16,185,129,0.12);
-  --accent-glow: rgba(16,185,129,0.25);
-  --danger: #f43f5e;
-  --danger-dim: rgba(244,63,94,0.12);
-  --warn: #f59e0b;
-  --warn-dim: rgba(245,158,11,0.12);
-  --info: #3b82f6;
-  --info-dim: rgba(59,130,246,0.12);
+  --bg-deep: #f0f2f5;
+  --bg-base: #ffffff;
+  --bg-card: #ffffff;
+  --bg-elevated: #f7f8fa;
+  --bg-input: #f0f2f5;
+  --border: #e2e6ec;
+  --border-hover: #cdd3dc;
+  --text-primary: #111b21;
+  --text-secondary: #54656f;
+  --text-muted: #8696a0;
+  --accent: #00a884;
+  --accent-dim: rgba(0,168,132,0.07);
+  --accent-glow: rgba(0,168,132,0.12);
+  --danger: #ea0038;
+  --danger-dim: rgba(234,0,56,0.06);
+  --warn: #e6930a;
+  --warn-dim: rgba(230,147,10,0.06);
+  --info: #027eb5;
+  --info-dim: rgba(2,126,181,0.06);
   --radius-sm: 8px;
   --radius-md: 12px;
   --radius-lg: 16px;
   --radius-xl: 20px;
-  --shadow-card: 0 1px 3px rgba(0,0,0,0.3), 0 4px 20px rgba(0,0,0,0.15);
-  --shadow-elevated: 0 4px 12px rgba(0,0,0,0.4), 0 12px 40px rgba(0,0,0,0.25);
+  --shadow-card: 0 1px 2px rgba(0,0,0,0.04), 0 4px 16px rgba(0,0,0,0.04);
+  --shadow-elevated: 0 2px 8px rgba(0,0,0,0.06), 0 12px 32px rgba(0,0,0,0.06);
   --transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -54,7 +54,7 @@ body::before {
   left: -10%;
   width: 50%;
   height: 60%;
-  background: radial-gradient(ellipse, rgba(16,185,129,0.04) 0%, transparent 70%);
+  background: radial-gradient(ellipse, rgba(0,168,132,0.04) 0%, transparent 70%);
   pointer-events: none;
   z-index: 0;
 }
@@ -65,7 +65,7 @@ body::after {
   right: -10%;
   width: 45%;
   height: 50%;
-  background: radial-gradient(ellipse, rgba(59,130,246,0.03) 0%, transparent 70%);
+  background: radial-gradient(ellipse, rgba(2,126,181,0.03) 0%, transparent 70%);
   pointer-events: none;
   z-index: 0;
 }
@@ -75,9 +75,9 @@ header {
   position: sticky;
   top: 0;
   z-index: 50;
-  background: rgba(12,16,23,0.8);
-  backdrop-filter: blur(20px) saturate(1.2);
-  -webkit-backdrop-filter: blur(20px) saturate(1.2);
+  background: rgba(255,255,255,0.82);
+  backdrop-filter: blur(20px) saturate(1.4);
+  -webkit-backdrop-filter: blur(20px) saturate(1.4);
   border-bottom: 1px solid var(--border);
   padding: 0 32px;
   height: 64px;
@@ -96,11 +96,11 @@ header {
   width: 36px;
   height: 36px;
   border-radius: 10px;
-  background: linear-gradient(135deg, #10b981, #059669);
+  background: linear-gradient(135deg, #00a884, #007d63);
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 0 20px rgba(16,185,129,0.2);
+  box-shadow: 0 2px 8px rgba(0,168,132,0.2);
   flex-shrink: 0;
 }
 .logo-mark svg { width: 20px; height: 20px; }
@@ -134,13 +134,13 @@ header {
   font-weight: 600;
   background: var(--accent-dim);
   color: var(--accent);
-  border: 1px solid rgba(16,185,129,0.15);
+  border: 1px solid rgba(0,168,132,0.15);
   transition: var(--transition);
 }
 .conn-badge.offline {
   background: var(--danger-dim);
   color: var(--danger);
-  border-color: rgba(244,63,94,0.15);
+  border-color: rgba(234,0,56,0.15);
 }
 .conn-badge .pulse {
   width: 8px;
@@ -284,7 +284,7 @@ header {
 .card-head-icon.green { background: var(--accent-dim); color: var(--accent); }
 .card-head-icon.blue { background: var(--info-dim); color: var(--info); }
 .card-head-icon.amber { background: var(--warn-dim); color: var(--warn); }
-.card-head-icon.slate { background: rgba(139,149,168,0.1); color: var(--text-secondary); }
+.card-head-icon.slate { background: rgba(134,150,160,0.08); color: var(--text-muted); }
 .card-head-icon svg { width: 16px; height: 16px; }
 
 .card-head-title {
@@ -312,18 +312,19 @@ th {
 td {
   padding: 14px;
   font-size: 0.84rem;
-  border-bottom: 1px solid rgba(30,37,54,0.5);
+  border-bottom: 1px solid rgba(226,230,236,0.6);
   vertical-align: middle;
 }
 tr:last-child td { border-bottom: none; }
 tr { transition: var(--transition); }
-tbody tr:hover { background: rgba(255,255,255,0.015); }
+tbody tr:hover { background: rgba(0,168,132,0.02); }
 
 .phone-cell {
   font-weight: 600;
   font-family: 'JetBrains Mono', monospace;
   font-size: 0.82rem;
   letter-spacing: 0.01em;
+  color: var(--text-primary);
 }
 
 .status-badge {
@@ -348,7 +349,7 @@ tbody tr:hover { background: rgba(255,255,255,0.015); }
   flex-shrink: 0;
 }
 .status-badge.connected .status-dot {
-  box-shadow: 0 0 8px rgba(16,185,129,0.5);
+  box-shadow: 0 0 8px rgba(0,168,132,0.4);
   animation: dotPulse 2s ease-in-out infinite;
 }
 @keyframes dotPulse {
@@ -432,10 +433,11 @@ tbody tr:hover { background: rgba(255,255,255,0.015); }
 .form-textarea:focus {
   border-color: var(--accent);
   box-shadow: 0 0 0 3px var(--accent-dim);
+  background: #fff;
 }
 .form-select {
   appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238b95a8' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238696a0' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 12px center;
   padding-right: 36px;
@@ -473,11 +475,11 @@ tbody tr:hover { background: rgba(255,255,255,0.015); }
 
 .btn-primary {
   background: var(--accent);
-  color: #022c22;
+  color: #ffffff;
 }
 .btn-primary:hover {
-  background: #0ea272;
-  box-shadow: 0 0 20px rgba(16,185,129,0.25);
+  background: #009575;
+  box-shadow: 0 4px 14px rgba(0,168,132,0.25);
   transform: translateY(-1px);
 }
 .btn-primary:active { transform: translateY(0); }
@@ -485,11 +487,11 @@ tbody tr:hover { background: rgba(255,255,255,0.015); }
 .btn-danger {
   background: var(--danger-dim);
   color: var(--danger);
-  border: 1px solid rgba(244,63,94,0.15);
+  border: 1px solid rgba(234,0,56,0.12);
 }
 .btn-danger:hover {
-  background: rgba(244,63,94,0.2);
-  border-color: rgba(244,63,94,0.3);
+  background: rgba(234,0,56,0.1);
+  border-color: rgba(234,0,56,0.25);
 }
 
 .btn-ghost {
@@ -549,7 +551,7 @@ tbody tr:hover { background: rgba(255,255,255,0.015); }
 
 /* === LOG BOX === */
 .log-box {
-  background: var(--bg-input);
+  background: #f7f8fa;
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
   padding: 14px 16px;
@@ -568,7 +570,7 @@ tbody tr:hover { background: rgba(255,255,255,0.015); }
   display: flex;
   gap: 10px;
   padding: 3px 0;
-  border-bottom: 1px solid rgba(30,37,54,0.4);
+  border-bottom: 1px solid rgba(226,230,236,0.5);
   animation: logSlide 0.25s ease-out;
 }
 .log-entry:last-child { border-bottom: none; }
@@ -613,26 +615,26 @@ tbody tr:hover { background: rgba(255,255,255,0.015); }
   display: flex;
   align-items: center;
   gap: 10px;
-  box-shadow: var(--shadow-elevated);
+  box-shadow: 0 4px 24px rgba(0,0,0,0.1), 0 1px 4px rgba(0,0,0,0.06);
   animation: toastIn 0.35s cubic-bezier(0.16, 1, 0.3, 1);
   max-width: 420px;
   backdrop-filter: blur(12px);
 }
 .toast svg { width: 18px; height: 18px; flex-shrink: 0; }
 .toast.success {
-  background: rgba(16,185,129,0.15);
-  border: 1px solid rgba(16,185,129,0.2);
-  color: #6ee7b7;
+  background: rgba(255,255,255,0.95);
+  border: 1px solid rgba(0,168,132,0.2);
+  color: #007d63;
 }
 .toast.error {
-  background: rgba(244,63,94,0.15);
-  border: 1px solid rgba(244,63,94,0.2);
-  color: #fda4af;
+  background: rgba(255,255,255,0.95);
+  border: 1px solid rgba(234,0,56,0.2);
+  color: #b3002b;
 }
 .toast.info {
-  background: rgba(59,130,246,0.15);
-  border: 1px solid rgba(59,130,246,0.2);
-  color: #93c5fd;
+  background: rgba(255,255,255,0.95);
+  border: 1px solid rgba(2,126,181,0.2);
+  color: #015d8a;
 }
 .toast.out { animation: toastOut 0.3s ease-in forwards; }
 @keyframes toastIn {
@@ -649,8 +651,8 @@ tbody tr:hover { background: rgba(255,255,255,0.015); }
   display: none;
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.6);
-  backdrop-filter: blur(6px);
+  background: rgba(17,27,33,0.35);
+  backdrop-filter: blur(8px);
   z-index: 200;
   align-items: center;
   justify-content: center;
@@ -664,7 +666,7 @@ tbody tr:hover { background: rgba(255,255,255,0.015); }
   border-radius: var(--radius-xl);
   width: 100%;
   max-width: 460px;
-  box-shadow: var(--shadow-elevated);
+  box-shadow: 0 8px 40px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.06);
   animation: modalIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 @keyframes modalIn {
@@ -738,7 +740,7 @@ tbody tr:hover { background: rgba(255,255,255,0.015); }
 .pair-code-timer.timer-done { color: var(--accent); }
 
 .pair-code-display {
-  background: var(--bg-input);
+  background: #fff;
   border: 1px solid var(--border);
   border-top: none;
   border-radius: 0 0 var(--radius-sm) var(--radius-sm);
@@ -765,10 +767,10 @@ tbody tr:hover { background: rgba(255,255,255,0.015); }
   margin-top: 10px;
   padding: 10px 14px;
   background: var(--warn-dim);
-  border: 1px solid rgba(245,158,11,0.2);
+  border: 1px solid rgba(230,147,10,0.15);
   border-radius: var(--radius-sm);
   font-size: 0.76rem;
-  color: #fbbf24;
+  color: #a36800;
   line-height: 1.5;
 }
 .pair-code-warning.visible { display: flex; align-items: flex-start; gap: 8px; }
@@ -790,7 +792,7 @@ tbody tr:hover { background: rgba(255,255,255,0.015); }
 /* === METHOD TABS === */
 .method-tabs {
   display: flex;
-  gap: 8px;
+  gap: 4px;
   margin-bottom: 20px;
   background: var(--bg-input);
   border-radius: var(--radius-md);
@@ -817,9 +819,9 @@ tbody tr:hover { background: rgba(255,255,255,0.015); }
 .method-tab svg { width: 18px; height: 18px; flex-shrink: 0; }
 .method-tab:hover { color: var(--text-secondary); }
 .method-tab.active {
-  background: var(--bg-elevated);
+  background: #fff;
   color: var(--text-primary);
-  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
 }
 
 /* === QR SECTION === */
@@ -827,7 +829,7 @@ tbody tr:hover { background: rgba(255,255,255,0.015); }
 .pair-qr-section.visible { display: block; }
 
 .qr-frame {
-  background: var(--bg-input);
+  background: #fff;
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
   padding: 24px;
@@ -851,7 +853,7 @@ tbody tr:hover { background: rgba(255,255,255,0.015); }
   border-radius: var(--radius-sm);
   background: #fff;
   padding: 10px;
-  box-shadow: 0 0 30px rgba(16,185,129,0.15);
+  box-shadow: 0 2px 16px rgba(0,0,0,0.06);
 }
 .qr-loading {
   text-align: center;
@@ -1035,7 +1037,19 @@ tbody tr:hover { background: rgba(255,255,255,0.015); }
           <input class="form-input" id="sendTo" placeholder="628xxx atau 628xxx@s.whatsapp.net">
         </div>
         <div class="form-group">
-          <label class="form-label">Isi Pesan</label>
+          <label class="form-label">Tipe Pesan</label>
+          <select class="form-select" id="sendType" onchange="toggleSendMediaFields()">
+            <option value="text">Text</option>
+            <option value="image">Image</option>
+            <option value="document">Document</option>
+          </select>
+        </div>
+        <div class="form-group" id="sendMediaUrlGroup" style="display:none">
+          <label class="form-label" id="sendMediaUrlLabel">URL Gambar</label>
+          <input class="form-input" id="sendMediaUrl" placeholder="https://example.com/image.jpg">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Isi Pesan / Caption</label>
           <textarea class="form-textarea" id="sendMsg" placeholder="Ketik pesan yang akan dikirim..."></textarea>
         </div>
         <button class="btn btn-primary" onclick="sendMessage()" style="width:100%">
@@ -1065,7 +1079,19 @@ tbody tr:hover { background: rgba(255,255,255,0.015); }
           <input class="form-input" id="groupJid" placeholder="628xxx-xxxxxx@g.us">
         </div>
         <div class="form-group">
-          <label class="form-label">Isi Pesan</label>
+          <label class="form-label">Tipe Pesan</label>
+          <select class="form-select" id="groupType" onchange="toggleGroupMediaFields()">
+            <option value="text">Text</option>
+            <option value="image">Image</option>
+            <option value="document">Document</option>
+          </select>
+        </div>
+        <div class="form-group" id="groupMediaUrlGroup" style="display:none">
+          <label class="form-label" id="groupMediaUrlLabel">URL Gambar</label>
+          <input class="form-input" id="groupMediaUrl" placeholder="https://example.com/image.jpg">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Isi Pesan / Caption</label>
           <textarea class="form-textarea" id="groupMsg" placeholder="Ketik pesan untuk grup..."></textarea>
         </div>
         <button class="btn btn-primary" onclick="sendGroup()" style="width:100%">
@@ -1460,269 +1486,290 @@ pairingEvtSource.onmessage = function(e) {
       if (timerEl) {
         var timerTextEl = document.getElementById('pairCodeTimerText');
         timerEl.className = 'pair-code-timer timer-done';
-        timerTextEl.textContent = 'TERPAIRING';
-        timerEl.querySelector('svg').outerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>';
+        if (timerTextEl) timerTextEl.textContent = 'Paired!';
       }
-      toast('success', 'Berhasil terhubung!');
-      // Mark QR as done too
-      document.getElementById('qrLoading').style.display = 'none';
-      document.getElementById('qrPlaceholder').style.display = 'none';
-      var qrImg = document.getElementById('qrImage');
-      qrImg.alt = 'Terhubung';
-      qrImg.style.border = '3px solid #10b981';
-      setTimeout(function() { hidePairModal(); }, 2000);
+      toast('success', 'Berhasil pair: ' + phone);
+      setTimeout(function() { hidePairModal(); }, 1500);
+      currentPairingPhone = null;
     }
 
-    // Disconnected but previously paired
-    if (connected && phone === currentPairingPhone) {
-      if (pairingTimerInterval) clearInterval(pairingTimerInterval);
+    // Error
+    if (data.error) {
+      toast('error', data.error);
+      if (phone === currentPairingPhone) {
+        if (pairingTimerInterval) clearInterval(pairingTimerInterval);
+      }
     }
-
-    if (status === 'removed' && phone === currentPairingPhone) {
-      hidePairModal();
-    }
-  } catch(err) {}
+  } catch(err) {
+    console.error('SSE parse error', err);
+  }
 };
 
-// === METHOD SELECTOR ===
-var currentMethod = 'qr';
+// === PAIR MODAL ===
+function showPairModal() {
+  document.getElementById('pairModal').classList.add('open');
+  document.getElementById('pairPhone').value = '';
+  document.getElementById('pairCodeDisplay').textContent = '';
+  document.getElementById('pairCodeSection').classList.remove('visible');
+  document.getElementById('pairQrSection').classList.remove('visible');
+  document.getElementById('pairCodeWarning').classList.remove('visible');
+  document.getElementById('qrImage').style.display = 'none';
+  document.getElementById('qrPlaceholder').style.display = '';
+  document.getElementById('qrLoading').style.display = 'none';
+  document.getElementById('tabQr').classList.add('active');
+  document.getElementById('tabCode').classList.remove('active');
+  if (pairingTimerInterval) clearInterval(pairingTimerInterval);
+  currentPairingPhone = null;
+  setTimeout(function() { document.getElementById('pairPhone').focus(); }, 100);
+}
+function hidePairModal() {
+  document.getElementById('pairModal').classList.remove('open');
+  if (pairingTimerInterval) clearInterval(pairingTimerInterval);
+  currentPairingPhone = null;
+}
 
 function selectMethod(method) {
-  currentMethod = method;
   document.getElementById('tabQr').classList.toggle('active', method === 'qr');
   document.getElementById('tabCode').classList.toggle('active', method === 'code');
   document.getElementById('pairQrSection').classList.toggle('visible', method === 'qr');
   document.getElementById('pairCodeSection').classList.toggle('visible', method === 'code');
 }
 
-// === PAIRING MODAL ===
-function showPairModal() {
-  selectMethod('qr');
-  document.getElementById('pairModal').classList.add('open');
-  setTimeout(function() {
-    document.getElementById('pairPhone').focus();
-  }, 100);
-}
-
-function hidePairModal() {
-  document.getElementById('pairModal').classList.remove('open');
-  // Reset QR
-  document.getElementById('pairQrSection').classList.remove('visible');
-  document.getElementById('qrImage').style.display = 'none';
-  document.getElementById('qrPlaceholder').style.display = 'block';
-  document.getElementById('qrLoading').style.display = 'none';
-  document.getElementById('qrStartBtn').disabled = false;
-  document.getElementById('qrStartBtn').innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>\n          Mulai QR Pairing';
-  // Reset Code
-  document.getElementById('pairCodeSection').classList.remove('visible');
-  document.getElementById('pairCodeDisplay').textContent = '';
-  document.getElementById('pairCodeWarning').classList.remove('visible');
-  // Reset timer
-  document.getElementById('pairPhone').value = '';
-  if (pairingTimerInterval) clearInterval(pairingTimerInterval);
-  currentPairingPhone = null;
-  var timerEl = document.getElementById('pairCodeTimer');
-  var timerTextEl = document.getElementById('pairCodeTimerText');
-  timerEl.className = 'pair-code-timer timer-ok';
-  timerTextEl.textContent = '5:00';
-  timerEl.querySelector('svg').outerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>';
-}
-
 // === QR PAIRING ===
-async function startQRPairing() {
+function showQR(qrDataUrl) {
+  var img = document.getElementById('qrImage');
+  var placeholder = document.getElementById('qrPlaceholder');
+  var loading = document.getElementById('qrLoading');
+  img.src = qrDataUrl;
+  img.style.display = 'block';
+  placeholder.style.display = 'none';
+  loading.style.display = 'none';
+}
+
+function startQRPairing() {
   var phone = document.getElementById('pairPhone').value.trim();
-  if (!phone) return toast('error', 'Nomor wajib diisi');
+  if (!phone) return toast('error', 'Masukkan nomor WhatsApp');
+  if (!/^\d+$/.test(phone)) return toast('error', 'Nomor hanya boleh berisi angka');
 
-  var btn = document.getElementById('qrStartBtn');
-  btn.disabled = true;
-  btn.innerHTML = '<div class="spinner" style="width:16px;height:16px;border-width:2px;margin:0"></div> Memproses...';
-
-  document.getElementById('qrPlaceholder').style.display = 'none';
-  document.getElementById('qrLoading').style.display = 'block';
-  document.getElementById('pairQrSection').classList.add('visible');
   currentPairingPhone = phone;
+  document.getElementById('qrImage').style.display = 'none';
+  document.getElementById('qrPlaceholder').style.display = 'none';
+  document.getElementById('qrLoading').style.display = '';
 
-  try {
-    var r = await apiFetch('/api/pair', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ phone: phone, method: 'qr' })
-    });
-    var data = await r.json();
-
-    if (r.ok) {
-      showQR(data.qr);
-      toast('success', 'QR code siap — scan dari WhatsApp');
-    } else if (r.status === 409 && data.registered) {
-      toast('info', 'Nomor ini sudah terdaftar' + (data.connected ? ' dan terhubung' : ''));
-      hidePairModal();
-      refreshSessions();
-    } else {
-      toast('error', data.error || 'Gagal QR pairing');
+  apiFetch('/api/pair/qr', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ phone: phone })
+  })
+  .then(function(r) { return r.json(); })
+  .then(function(data) {
+    if (data.error) {
+      toast('error', data.error);
       document.getElementById('qrLoading').style.display = 'none';
-      document.getElementById('qrPlaceholder').style.display = 'block';
+      document.getElementById('qrPlaceholder').style.display = '';
     }
-  } catch(e) {
+  })
+  .catch(function(e) {
     toast('error', e.message);
     document.getElementById('qrLoading').style.display = 'none';
-    document.getElementById('qrPlaceholder').style.display = 'block';
-  }
-
-  btn.disabled = false;
-  btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>\n          Mulai QR Pairing';
-}
-
-function showQR(qrData) {
-  document.getElementById('qrLoading').style.display = 'none';
-  var img = document.getElementById('qrImage');
-  img.src = qrData;
-  img.style.display = 'block';
+    document.getElementById('qrPlaceholder').style.display = '';
+  });
 }
 
 // === CODE PAIRING ===
-async function startCodePairing() {
-  var phone = document.getElementById('pairPhone').value.trim();
-  if (!phone) return toast('error', 'Nomor wajib diisi');
+function showPairingCode(phone, code, time, expiresAt) {
+  document.getElementById('pairCodeDisplay').textContent = code;
+  document.getElementById('pairCodeTime').textContent = 'Dibuat: ' + new Date(time).toLocaleTimeString('id-ID');
+  document.getElementById('pairCodeExpiry').textContent = 'Berlaku hingga: ' + new Date(expiresAt).toLocaleTimeString('id-ID');
 
-  var btn = document.getElementById('codeStartBtn');
-  btn.disabled = true;
-  btn.innerHTML = '<div class="spinner" style="width:16px;height:16px;border-width:2px;margin:0"></div> Memproses...';
+  // Timer countdown
+  if (pairingTimerInterval) clearInterval(pairingTimerInterval);
+  var timerEl = document.getElementById('pairCodeTimer');
+  var timerTextEl = document.getElementById('pairCodeTimerText');
 
-  document.getElementById('pairCodeWarning').classList.remove('visible');
-  document.getElementById('pairCodeSection').classList.add('visible');
-  currentPairingPhone = phone;
-
-  try {
-    var r = await apiFetch('/api/pair', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ phone: phone, method: 'code' })
-    });
-    var data = await r.json();
-
-    if (r.ok) {
-      showPairingCode(phone, data.code, data.time, data.expiresAt);
-      toast('success', 'Pairing code: ' + data.code);
-    } else if (r.status === 409 && data.registered) {
-      toast('info', 'Nomor ini sudah terdaftar' + (data.connected ? ' dan terhubung' : ''));
-      hidePairModal();
-      refreshSessions();
-    } else {
-      toast('error', data.error || 'Gagal melakukan pairing');
+  function updateTimer() {
+    var now = Date.now();
+    var remaining = new Date(expiresAt).getTime() - now;
+    if (remaining <= 0) {
+      clearInterval(pairingTimerInterval);
+      timerEl.className = 'pair-code-timer timer-danger';
+      timerTextEl.textContent = 'Expired';
+      return;
     }
-  } catch(e) {
-    toast('error', e.message);
+    var totalSec = Math.floor(remaining / 1000);
+    var min = Math.floor(totalSec / 60);
+    var sec = totalSec % 60;
+    timerTextEl.textContent = min + ':' + (sec < 10 ? '0' : '') + sec;
+    if (totalSec > 60) {
+      timerEl.className = 'pair-code-timer timer-ok';
+    } else if (totalSec > 20) {
+      timerEl.className = 'pair-code-timer timer-warn';
+    } else {
+      timerEl.className = 'pair-code-timer timer-danger';
+    }
   }
-
-  btn.disabled = false;
-  btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 7 4 4 20 4 20 7"/><line x1="9" y1="20" x2="15" y2="20"/><line x1="12" y1="4" x2="12" y2="20"/></svg>\n          Mulai Pairing';
+  updateTimer();
+  pairingTimerInterval = setInterval(updateTimer, 1000);
 }
 
-function showPairingCode(phone, code, time, expiresAt) {
-  var now = Date.now();
-  var dibuat = time || now;
-  var expired = expiresAt || (now + 300000);
-
-  document.getElementById('pairCodeDisplay').textContent = code;
-  document.getElementById('pairCodeTime').textContent = 'Dibuat: ' + new Date(dibuat).toLocaleTimeString('id-ID');
-  document.getElementById('pairCodeExpiry').textContent = 'Berlaku hingga: ' + new Date(expired).toLocaleTimeString('id-ID');
-  document.getElementById('pairCodeSection').classList.add('visible');
+function startCodePairing() {
+  var phone = document.getElementById('pairPhone').value.trim();
+  if (!phone) return toast('error', 'Masukkan nomor WhatsApp');
+  if (!/^\d+$/.test(phone)) return toast('error', 'Nomor hanya boleh berisi angka');
 
   currentPairingPhone = phone;
+  document.getElementById('pairCodeDisplay').textContent = '...';
+  document.getElementById('pairCodeTime').textContent = 'Dibuat: --:--:--';
+  document.getElementById('pairCodeExpiry').textContent = 'Berlaku hingga: --:--:--';
+  document.getElementById('pairCodeWarning').classList.remove('visible');
 
-  // Reset timer display
   var timerEl = document.getElementById('pairCodeTimer');
   var timerTextEl = document.getElementById('pairCodeTimerText');
   timerEl.className = 'pair-code-timer timer-ok';
-  timerTextEl.textContent = '5:00';
-  timerEl.querySelector('svg').outerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>';
+  timerTextEl.textContent = '...';
 
-  if (pairingTimerInterval) clearInterval(pairingTimerInterval);
-  pairingTimerInterval = setInterval(function() {
-    var remaining = Math.max(0, expired - Date.now());
-    var mins = Math.floor(remaining / 60000);
-    var secs = Math.floor((remaining % 60000) / 1000);
-    var tEl = document.getElementById('pairCodeTimer');
-    var tText = document.getElementById('pairCodeTimerText');
-    tText.textContent = mins + ':' + secs.toString().padStart(2, '0');
-    if (remaining < 60000) {
-      tEl.className = 'pair-code-timer timer-danger';
-    } else if (remaining < 120000) {
-      tEl.className = 'pair-code-timer timer-warn';
-    } else {
-      tEl.className = 'pair-code-timer timer-ok';
+  apiFetch('/api/pair/code', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ phone: phone })
+  })
+  .then(function(r) { return r.json(); })
+  .then(function(data) {
+    if (data.error) {
+      toast('error', data.error);
+      document.getElementById('pairCodeDisplay').textContent = '';
+      timerTextEl.textContent = '...';
     }
-    if (remaining <= 0) {
-      clearInterval(pairingTimerInterval);
-      tEl.className = 'pair-code-timer timer-danger';
-      tText.textContent = 'EXPIRED';
-    }
-  }, 1000);
+  })
+  .catch(function(e) {
+    toast('error', e.message);
+    document.getElementById('pairCodeDisplay').textContent = '';
+    timerTextEl.textContent = '...';
+  });
 }
 
-// === KIRIM PESAN ===
+// === SEND MESSAGE ===
+function toggleSendMediaFields() {
+  var type = document.getElementById('sendType').value;
+  var group = document.getElementById('sendMediaUrlGroup');
+  var label = document.getElementById('sendMediaUrlLabel');
+  if (type === 'text') {
+    group.style.display = 'none';
+  } else {
+    group.style.display = '';
+    label.textContent = type === 'image' ? 'URL Gambar' : 'URL Dokumen';
+    document.getElementById('sendMediaUrl').placeholder = type === 'image'
+      ? 'https://example.com/image.jpg'
+      : 'https://example.com/document.pdf';
+  }
+}
+
+function toggleGroupMediaFields() {
+  var type = document.getElementById('groupType').value;
+  var group = document.getElementById('groupMediaUrlGroup');
+  var label = document.getElementById('groupMediaUrlLabel');
+  if (type === 'text') {
+    group.style.display = 'none';
+  } else {
+    group.style.display = '';
+    label.textContent = type === 'image' ? 'URL Gambar' : 'URL Dokumen';
+    document.getElementById('groupMediaUrl').placeholder = type === 'image'
+      ? 'https://example.com/image.jpg'
+      : 'https://example.com/document.pdf';
+  }
+}
+
 async function sendMessage() {
   var phone = document.getElementById('sendPhone').value;
   var to = document.getElementById('sendTo').value.trim();
-  var message = document.getElementById('sendMsg').value.trim();
-  if (!phone || !to || !message) return toast('error', 'Semua field wajib diisi');
+  var type = document.getElementById('sendType').value;
+  var msg = document.getElementById('sendMsg').value.trim();
+  var mediaUrl = document.getElementById('sendMediaUrl').value.trim();
+
+  if (!phone) return toast('error', 'Pilih session bot');
+  if (!to) return toast('error', 'Masukkan nomor tujuan');
+  if (type === 'text' && !msg) return toast('error', 'Masukkan isi pesan');
+  if (type !== 'text' && !mediaUrl) return toast('error', 'Masukkan URL media');
+
+  // Normalisasi nomor tujuan
+  if (!to.includes('@')) {
+    to = to + '@s.whatsapp.net';
+  }
+
+  var body = { phone: phone, to: to, type: type, text: msg };
+  if (type !== 'text') body.mediaUrl = mediaUrl;
+
   try {
     var r = await apiFetch('/api/send', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ phone: phone, to: to, message: message })
+      body: JSON.stringify(body)
     });
     var data = await r.json();
-    if (r.ok) toast('success', 'Terkirim! ID: ' + data.id);
-    else toast('error', data.error);
-  } catch(e) { toast('error', e.message); }
+    if (r.ok) {
+      toast('success', 'Pesan terkirim ke ' + to);
+      document.getElementById('sendMsg').value = '';
+      document.getElementById('sendMediaUrl').value = '';
+    } else {
+      toast('error', data.error || 'Gagal mengirim pesan');
+    }
+  } catch(e) {
+    toast('error', e.message);
+  }
 }
 
 async function sendGroup() {
   var phone = document.getElementById('groupPhone').value;
-  var groupJid = document.getElementById('groupJid').value.trim();
-  var message = document.getElementById('groupMsg').value.trim();
-  if (!phone || !groupJid || !message) return toast('error', 'Semua field wajib diisi');
+  var jid = document.getElementById('groupJid').value.trim();
+  var type = document.getElementById('groupType').value;
+  var msg = document.getElementById('groupMsg').value.trim();
+  var mediaUrl = document.getElementById('groupMediaUrl').value.trim();
+
+  if (!phone) return toast('error', 'Pilih session bot');
+  if (!jid) return toast('error', 'Masukkan grup JID');
+  if (type === 'text' && !msg) return toast('error', 'Masukkan isi pesan');
+  if (type !== 'text' && !mediaUrl) return toast('error', 'Masukkan URL media');
+
+  var body = { phone: phone, to: jid, type: type, text: msg };
+  if (type !== 'text') body.mediaUrl = mediaUrl;
+
   try {
-    var r = await apiFetch('/api/send-group', {
+    var r = await apiFetch('/api/send', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ phone: phone, groupJid: groupJid, message: message })
+      body: JSON.stringify(body)
     });
     var data = await r.json();
-    if (r.ok) toast('success', 'Terkirim ke grup! ID: ' + data.id);
-    else toast('error', data.error);
-  } catch(e) { toast('error', e.message); }
+    if (r.ok) {
+      toast('success', 'Pesan terkirim ke grup ' + jid);
+      document.getElementById('groupMsg').value = '';
+      document.getElementById('groupMediaUrl').value = '';
+    } else {
+      toast('error', data.error || 'Gagal mengirim pesan');
+    }
+  } catch(e) {
+    toast('error', e.message);
+  }
 }
 
-// === HAPUS SESSION ===
-async function removeSession(phone) {
-  if (!confirm('Hapus session ' + phone + '? Data autentikasi akan dihapus permanen.')) return;
-  try {
-    await apiFetch('/api/sessions/' + phone, { method: 'DELETE' });
-    toast('info', 'Session ' + phone + ' telah dihapus');
-    refreshSessions();
-  } catch(e) { toast('error', e.message); }
+// === REMOVE SESSION ===
+function removeSession(phone) {
+  if (!confirm('Hapus session ' + phone + '?')) return;
+  apiFetch('/api/sessions/' + phone, { method: 'DELETE' })
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      if (data.error) {
+        toast('error', data.error);
+      } else {
+        toast('success', 'Session ' + phone + ' dihapus');
+        refreshSessions();
+      }
+    })
+    .catch(function(e) { toast('error', e.message); });
 }
 
-// === KEYBOARD: Enter di input pair untuk submit sesuai method aktif ===
-document.getElementById('pairPhone').addEventListener('keydown', function(e) {
-  if (e.key === 'Enter') {
-    if (currentMethod === 'qr') startQRPairing();
-    else startCodePairing();
-  }
-});
-
-// === INIT: cek token saat load, update user info ===
-(function init() {
-  var t = localStorage.getItem('wabaileys_token');
-  if (t) {
-    updateUserInfo();
-    refreshSessions();
-  } else {
-    // Redirect ke login — terjadi di getToken()
-  }
-})();
+// === INIT ===
+updateUserInfo();
 </script>
 </body>
 </html>

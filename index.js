@@ -21,6 +21,10 @@ const REQUIRE_API_KEY = process.env.REQUIRE_API_KEY !== 'false' // default true
 const CORS_ORIGIN = process.env.CORS_ORIGIN || '*' // ganti dengan domain spesifik di prod
 const TRUST_PROXY = process.env.TRUST_PROXY || '' // 'true' atau jumlah hops
 
+// ===== WEBHOOK CONFIG =====
+const WEBHOOK_URL = process.env.WEBHOOK_URL || '' // URL untuk menerima webhook callback
+const WEBHOOK_SECRET = process.env.WEBHOOK_SECRET || '' // Secret untuk HMAC signature webhook
+
 // ===== USER CONFIG =====
 const DEFAULT_USERNAME = process.env.DEFAULT_USERNAME || 'admin'
 const DEFAULT_PASSWORD = process.env.DEFAULT_PASSWORD || ''
@@ -48,11 +52,7 @@ if (REQUIRE_API_KEY && !API_KEY) {
   process.exit(1)
 }
 
-// Trust proxy — penting agar req.ip akurat di belakang reverse proxy
-if (TRUST_PROXY) {
-  const hops = parseInt(TRUST_PROXY) || 1
-  express().set('trust proxy', hops)
-}
+// Trust proxy akan dipasang ke app Express setelah app dibuat (line ~490)
 
 // ===== LOGGER =====
 const logger = pino({
@@ -87,6 +87,28 @@ function emitLog(level, msg, err) {
     } catch (e) {
       removeLogClient(res)
     }
+  }
+}
+
+// ===== WEBHOOK =====
+async function sendWebhook(event, data) {
+  if (!WEBHOOK_URL) return
+  try {
+    const payload = JSON.stringify({ event, data, time: Date.now() })
+    const signature = WEBHOOK_SECRET
+      ? crypto.createHmac('sha256', WEBHOOK_SECRET).update(payload).digest('hex')
+      : ''
+    await fetch(WEBHOOK_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Webhook-Signature': signature,
+        'User-Agent': 'waBaileys/1.0',
+      },
+      body: payload,
+    })
+  } catch (err) {
+    emitLog('warn', `[Webhook] Gagal kirim event "${event}": ${err.message}`)
   }
 }
 
@@ -171,6 +193,29 @@ class SessionManager {
 
     sock.ev.on('creds.update', saveCreds)
 
+    // Webhook: pesan masuk
+    sock.ev.on('messages.upsert', async ({ messages, type }) => {
+      if (!messages || messages.length === 0) return
+      for (const msg of messages) {
+        // Skip pesan dari bot sendiri
+        if (msg.key?.fromMe) continue
+        const text = msg.message?.conversation
+          || msg.message?.extendedTextMessage?.text
+          || msg.message?.imageMessage?.caption
+          || ''
+        sendWebhook('message.incoming', {
+          phone,
+          from: msg.key?.remoteJid,
+          fromMe: msg.key?.fromMe,
+          text,
+          type: msg.message ? Object.keys(msg.message)[0] : null,
+          id: msg.key?.id,
+          timestamp: msg.messageTimestamp,
+          pushName: msg.pushName,
+        })
+      }
+    })
+
     sock.ev.on('connection.update', async ({ connection, lastDisconnect, qr }) => {
       if (qr) {
         try {
@@ -191,6 +236,7 @@ class SessionManager {
           status: 'paired', connected: true, registered: true,
         })
         emitLog('info', `[${phone}] Terhubung`)
+        sendWebhook('connection.open', { phone, jid: sock.user?.id })
       }
 
       if (connection === 'close') {
@@ -207,6 +253,7 @@ class SessionManager {
         const shouldReconnect = !isLoggedOut || isUnauthorized
 
         emitLog('warn', `[${phone}] Disconnected (code: ${statusCode}, registered: ${isRegistered}, reconnect: ${shouldReconnect})`)
+        sendWebhook('connection.close', { phone, statusCode, reason: lastDisconnect?.error?.message, willReconnect: shouldReconnect })
 
         if (isUnauthorized && !isRegistered) {
           emitLog('warn', `[${phone}] Pairing belum selesai. Pairing ulang di dashboard`)
@@ -488,9 +535,10 @@ function emitPairingEvent(phone, info) {
 // ===== EXPRESS APP =====
 const app = express()
 
-// Trust proxy
+// Trust proxy — agar req.ip akurat di belakang reverse proxy
 if (TRUST_PROXY) {
-  app.set('trust proxy', parseInt(TRUST_PROXY) || 1)
+  const hops = parseInt(TRUST_PROXY) || 1
+  app.set('trust proxy', hops)
 }
 
 // Body parser dengan limit
@@ -680,7 +728,7 @@ app.post('/api/logout', (req, res) => {
 const rateLimitMap = new Map()
 function rateLimit(maxRequests, windowMs) {
   return function (req, res, next) {
-    const key = `${req.ip}-${req.requestId || ''}`
+    const key = `${req.ip}:${req.path}`
     const now = Date.now()
     const entry = rateLimitMap.get(key) || { count: 0, resetAt: now + windowMs }
 
@@ -787,6 +835,71 @@ app.delete('/api/sessions/:phone', requireAuth, async (req, res) => {
   res.json({ message: 'Session dihapus' })
 })
 
+// ── Helper: build message content ──
+function buildMessageContent(req) {
+  const { type, message, image, imageUrl, document, documentUrl, fileName, mimetype } = req.body
+  const msgType = type || 'text'
+
+  if (msgType === 'image') {
+    // image: bisa base64 string atau URL
+    const imgData = image || imageUrl || ''
+    if (!imgData) return null
+    return {
+      image: imgData.startsWith('http') ? { url: imgData } : imgData,
+      caption: message || '',
+    }
+  }
+
+  if (msgType === 'document') {
+    const docData = document || documentUrl || ''
+    if (!docData) return null
+    return {
+      document: docData.startsWith('http') ? { url: docData } : docData,
+      fileName: fileName || 'document',
+      mimetype: mimetype || 'application/octet-stream',
+      caption: message || '',
+    }
+  }
+
+  // Default: text
+  return { text: message || '' }
+}
+
+// ── Cek nomor WhatsApp ──
+app.post('/api/check-number', requireAuth, rateLimit(10, 60000), async (req, res) => {
+  const { phone } = req.body
+  if (!phone) return res.status(400).json({ error: 'phone wajib diisi' })
+  const cleanPhone = sanitizePhone(phone)
+  if (!isValidPhone(cleanPhone)) {
+    return res.status(400).json({ error: 'Format nomor tidak valid' })
+  }
+
+  // Cari session yang terhubung untuk melakukan pengecekan
+  const sessions = sessionManager.listSessions()
+  const connected = sessions.find((s) => s.connected)
+  if (!connected) return res.status(503).json({ error: 'Tidak ada session terhubung untuk cek nomor' })
+
+  try {
+    const session = sessionManager.getSession(connected.phone)
+    if (!session || !session.sock) throw new Error('Session tidak tersedia')
+    const jid = `${cleanPhone}@s.whatsapp.net`
+    const [result] = await session.sock.onWhatsApp(jid)
+    if (result) {
+      res.json({
+        success: true,
+        jid: result.jid,
+        exists: result.exists,
+        phone: cleanPhone,
+      })
+    } else {
+      res.json({ success: true, exists: false, phone: cleanPhone })
+    }
+  } catch (err) {
+    emitLog('error', `[check-number] Gagal cek ${cleanPhone}: ${err.message}`, err)
+    res.status(500).json({ error: err.message })
+  }
+})
+
 // ── Kirim pesan ──
 app.post('/api/send', requireAuth, rateLimit(30, 60000), async (req, res) => {
   const { phone, to, message } = req.body
@@ -804,16 +917,24 @@ app.post('/api/send', requireAuth, rateLimit(30, 60000), async (req, res) => {
   if (!session.connected) return res.status(503).json({ error: 'Session belum terhubung' })
 
   const cleanTo = to.includes('@') ? to : `${sanitizePhone(to)}@s.whatsapp.net`
-  const cleanMessage = sanitizeMessage(message)
-  if (!cleanMessage) return res.status(400).json({ error: 'Isi pesan tidak valid' })
+  const content = buildMessageContent(req)
+  if (!content) return res.status(400).json({ error: 'Konten pesan tidak valid. Untuk image/document, kirim data/base64 atau URL.' })
 
   try {
-    const sent = await session.sock.sendMessage(cleanTo, { text: cleanMessage })
+    const sent = await session.sock.sendMessage(cleanTo, content)
     emitLog('info', `[${phone}] Pesan terkirim ke ${cleanTo}`)
     res.json({ success: true, id: sent?.key?.id })
   } catch (err) {
-    emitLog('error', `[${phone}] Gagal kirim: ${err.message}`, err)
-    res.status(500).json({ error: err.message })
+    const msg = err?.message || String(err)
+    emitLog('error', `[${phone}] Gagal kirim: ${msg}`, err)
+    // Handle error 463
+    if (msg.includes('463') || msg.includes('tctoken') || msg.includes('restricted')) {
+      return res.status(403).json({
+        error: 'Pesan gagal: Akun WhatsApp bot dibatasi atau kontak memblokir nomor bot. Coba pairing ulang.',
+        code: 463,
+      })
+    }
+    res.status(500).json({ error: msg })
   }
 })
 
@@ -834,16 +955,23 @@ app.post('/api/send-group', requireAuth, rateLimit(30, 60000), async (req, res) 
   if (!session.connected) return res.status(503).json({ error: 'Session belum terhubung' })
 
   const jid = groupJid.includes('@') ? groupJid : `${groupJid}@g.us`
-  const cleanMessage = sanitizeMessage(message)
-  if (!cleanMessage) return res.status(400).json({ error: 'Isi pesan tidak valid' })
+  const content = buildMessageContent(req)
+  if (!content) return res.status(400).json({ error: 'Konten pesan tidak valid.' })
 
   try {
-    const sent = await session.sock.sendMessage(jid, { text: cleanMessage })
+    const sent = await session.sock.sendMessage(jid, content)
     emitLog('info', `[${phone}] Pesan grup terkirim ke ${jid}`)
     res.json({ success: true, id: sent?.key?.id })
   } catch (err) {
-    emitLog('error', `[${phone}] Gagal kirim grup: ${err.message}`, err)
-    res.status(500).json({ error: err.message })
+    const msg = err?.message || String(err)
+    emitLog('error', `[${phone}] Gagal kirim grup: ${msg}`, err)
+    if (msg.includes('463') || msg.includes('tctoken') || msg.includes('restricted')) {
+      return res.status(403).json({
+        error: 'Pesan gagal: Akun WhatsApp bot dibatasi atau kontak memblokir nomor bot.',
+        code: 463,
+      })
+    }
+    res.status(500).json({ error: msg })
   }
 })
 
@@ -954,6 +1082,7 @@ app.listen(PORT, '0.0.0.0', () => {
   emitLog('info', `CORS origin: ${CORS_ORIGIN}`)
   if (TRUST_PROXY) emitLog('info', `Trust proxy: ${TRUST_PROXY} hop(s)`)
   emitLog('info', `API_KEY: ${API_KEY ? '[TERKONFIGURASI]' : '[TIDAK TERKONFIGURASI]'}`)
+  emitLog('info', `Webhook: ${WEBHOOK_URL ? '[TERKONFIGURASI]' : '[TIDAK ADA]'}`)
 })
 
 // ===== GRACEFUL SHUTDOWN =====
