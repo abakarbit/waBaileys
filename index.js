@@ -618,7 +618,8 @@ function getSession(token) {
   if (!token) return null
   const session = dashboardSessions.get(token)
   if (!session) return null
-  // Extend session on access
+  // Extend session setiap kali diakses — 24 jam dari aktivitas terakhir
+  session.createdAt = Date.now()
   return session
 }
 
@@ -1088,7 +1089,31 @@ app.get('/', (req, res) => {
 })
 
 // ===== START =====
-app.listen(PORT, '0.0.0.0', () => {
+async function restoreExistingSessions() {
+  try {
+    if (!fs.existsSync(AUTH_BASE)) return
+    const dirs = fs.readdirSync(AUTH_BASE)
+    let restored = 0
+    for (const name of dirs) {
+      const credsPath = path.join(AUTH_BASE, name, 'creds.json')
+      if (!fs.existsSync(credsPath)) continue
+      try {
+        const creds = JSON.parse(fs.readFileSync(credsPath, 'utf8'))
+        if (creds.registered) {
+          await sessionManager.startSession(name)
+          restored++
+        }
+      } catch (e) {
+        // skip corrupted creds
+      }
+    }
+    if (restored > 0) emitLog('info', `Restored ${restored} WhatsApp session(s) from disk`)
+  } catch (e) {
+    emitLog('warn', `Session restore: ${e.message}`)
+  }
+}
+
+app.listen(PORT, '0.0.0.0', async () => {
   emitLog('info', `waBaileys server berjalan di port ${PORT}`)
   emitLog('info', `Dashboard: http://localhost:${PORT}/dashboard`)
   emitLog('info', `API: POST /api/pair, /api/send, /api/send-group`)
@@ -1096,6 +1121,9 @@ app.listen(PORT, '0.0.0.0', () => {
   if (TRUST_PROXY) emitLog('info', `Trust proxy: ${TRUST_PROXY} hop(s)`)
   emitLog('info', `API_KEY: ${API_KEY ? '[TERKONFIGURASI]' : '[TIDAK TERKONFIGURASI]'}`)
   emitLog('info', `Webhook: ${WEBHOOK_URL ? '[TERKONFIGURASI]' : '[TIDAK ADA]'}`)
+
+  // Restore session WhatsApp yang sudah pernah dipair
+  await restoreExistingSessions()
 })
 
 // ===== GRACEFUL SHUTDOWN =====
