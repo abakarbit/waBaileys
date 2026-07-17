@@ -914,6 +914,47 @@ app.post('/api/check-number', requireAuth, rateLimit(10, 60000), async (req, res
   }
 })
 
+// ── Helper: kirim pesan dengan deteksi error 463 async ──
+async function sendWithErrorCheck(sock, jid, content, phone, timeoutMs = 2000) {
+  let matchKey = null
+  let errorStatus = null
+  let resolveWait = null
+  const waitPromise = new Promise(resolve => { resolveWait = resolve })
+
+  const onUpdate = (updates) => {
+    for (const update of updates) {
+      if (!matchKey) continue
+      if (!update.key?.fromMe) continue
+      if (update.key?.id !== matchKey.id) continue
+      if (update.update?.status !== 0) continue // WAMessageStatus.ERROR
+      errorStatus = update.update
+      if (resolveWait) resolveWait()
+    }
+  }
+
+  sock.ev.on('messages.update', onUpdate)
+  try {
+    const sent = await sock.sendMessage(jid, content)
+    matchKey = sent?.key
+    if (matchKey) {
+      await Promise.race([
+        waitPromise,
+        new Promise(resolve => setTimeout(resolve, timeoutMs)),
+      ])
+      if (errorStatus) {
+        emitLog('error', `[${phone}] Pesan gagal (error 463): akun dibatasi atau kontak memblokir`)
+        throw new Boom('Pesan gagal: Akun WhatsApp bot dibatasi atau kontak memblokir nomor bot. Coba pairing ulang.', {
+          statusCode: 403,
+          data: { code: 463 },
+        })
+      }
+    }
+    return sent
+  } finally {
+    sock.ev.off('messages.update', onUpdate)
+  }
+}
+
 // ── Kirim pesan ──
 app.post('/api/send', requireAuth, rateLimit(30, 60000), async (req, res) => {
   const { phone, to, message } = req.body
@@ -935,13 +976,12 @@ app.post('/api/send', requireAuth, rateLimit(30, 60000), async (req, res) => {
   if (!content) return res.status(400).json({ error: 'Konten pesan tidak valid. Untuk image/document, kirim data/base64 atau URL.' })
 
   try {
-    const sent = await session.sock.sendMessage(cleanTo, content)
+    const sent = await sendWithErrorCheck(session.sock, cleanTo, content, cleanPhone)
     emitLog('info', `[${phone}] Pesan terkirim ke ${cleanTo}`)
     res.json({ success: true, id: sent?.key?.id })
   } catch (err) {
     const msg = err?.message || String(err)
     emitLog('error', `[${phone}] Gagal kirim: ${msg}`, err)
-    // Handle error 463
     if (msg.includes('463') || msg.includes('tctoken') || msg.includes('restricted')) {
       return res.status(403).json({
         error: 'Pesan gagal: Akun WhatsApp bot dibatasi atau kontak memblokir nomor bot. Coba pairing ulang.',
@@ -973,7 +1013,7 @@ app.post('/api/send-group', requireAuth, rateLimit(30, 60000), async (req, res) 
   if (!content) return res.status(400).json({ error: 'Konten pesan tidak valid.' })
 
   try {
-    const sent = await session.sock.sendMessage(jid, content)
+    const sent = await sendWithErrorCheck(session.sock, jid, content, cleanPhone)
     emitLog('info', `[${phone}] Pesan grup terkirim ke ${jid}`)
     res.json({ success: true, id: sent?.key?.id })
   } catch (err) {
