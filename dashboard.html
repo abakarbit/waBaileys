@@ -1511,7 +1511,7 @@ function showPairModal() {
   document.getElementById('pairPhone').value = '';
   document.getElementById('pairCodeDisplay').textContent = '';
   document.getElementById('pairCodeSection').classList.remove('visible');
-  document.getElementById('pairQrSection').classList.remove('visible');
+  document.getElementById('pairQrSection').classList.add('visible');
   document.getElementById('pairCodeWarning').classList.remove('visible');
   document.getElementById('qrImage').style.display = 'none';
   document.getElementById('qrPlaceholder').style.display = '';
@@ -1522,6 +1522,19 @@ function showPairModal() {
   currentPairingPhone = null;
   setTimeout(function() { document.getElementById('pairPhone').focus(); }, 100);
 }
+(function() {
+  var typingTimer;
+  function triggerQRPairing() {
+    var phone = document.getElementById('pairPhone').value.trim();
+    if (!phone) return;
+    if (!/^\d{8,15}$/.test(phone)) return;
+    startQRPairing();
+  }
+  document.getElementById('pairPhone').addEventListener('input', function() {
+    clearTimeout(typingTimer);
+    typingTimer = setTimeout(triggerQRPairing, 500);
+  });
+})();
 function hidePairModal() {
   document.getElementById('pairModal').classList.remove('open');
   if (pairingTimerInterval) clearInterval(pairingTimerInterval);
