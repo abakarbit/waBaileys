@@ -1555,15 +1555,23 @@ function startQRPairing() {
   document.getElementById('qrImage').style.display = 'none';
   document.getElementById('qrPlaceholder').style.display = 'none';
   document.getElementById('qrLoading').style.display = '';
+  document.getElementById('pairQrSection').classList.add('visible');
 
-  apiFetch('/api/pair/qr', {
+  apiFetch('/api/pair', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ phone: phone })
+    body: JSON.stringify({ phone: phone, method: 'qr' })
   })
   .then(function(r) { return r.json(); })
   .then(function(data) {
-    if (data.error) {
+    if (data.qr) {
+      showQR(data.qr);
+      toast('success', 'QR code siap — scan dari WhatsApp');
+    } else if (data.registered) {
+      toast('info', data.error || 'Nomor ini sudah terdaftar');
+      if (data.connected) hidePairModal();
+      refreshSessions();
+    } else if (data.error) {
       toast('error', data.error);
       document.getElementById('qrLoading').style.display = 'none';
       document.getElementById('qrPlaceholder').style.display = '';

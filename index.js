@@ -344,11 +344,17 @@ class SessionManager {
       throw new Error('Sedang ada request pairing aktif untuk nomor ini. Tunggu sejenak.')
     }
 
-    let session = this.sessions.get(phone)
-    if (!session) {
-      await this.startSession(phone)
-      session = this.sessions.get(phone)
+    // Restart session jika sudah ada, biar socket segar
+    const existing = this.sessions.get(phone)
+    if (existing) {
+      existing._removed = true
+      this._safeEndSocket(existing)
+      this.sessions.delete(phone)
+      resetReconnectState(phone)
     }
+
+    await this.startSession(phone)
+    const session = this.sessions.get(phone)
     if (!session) {
       throw new Error('Gagal membuat session')
     }
@@ -438,11 +444,18 @@ class SessionManager {
       throw new Error('Sedang ada proses pairing aktif untuk nomor ini.')
     }
 
-    let session = this.sessions.get(phone)
-    if (!session) {
-      await this.startSession(phone)
-      session = this.sessions.get(phone)
+    // Jika session sudah ada, end socket lama agar QR baru muncul
+    const existing = this.sessions.get(phone)
+    if (existing) {
+      existing._removed = true
+      this._safeEndSocket(existing)
+      this.sessions.delete(phone)
+      resetReconnectState(phone)
+      // Jangan hapus auth biar tetap bisa pairing ulang
     }
+
+    await this.startSession(phone)
+    const session = this.sessions.get(phone)
     if (!session) {
       throw new Error('Gagal membuat session')
     }
